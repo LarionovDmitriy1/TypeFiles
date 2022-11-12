@@ -27,7 +27,7 @@ void GetMenu()
                 break;
             case 3:
                 WorkWithFile file3 = new WorkWithFile();
-                file3.WriteByteStringInFile();
+                file3.StreamWriter();
                 break;
             case 4:
                 WorkWithFile file = new WorkWithFile();

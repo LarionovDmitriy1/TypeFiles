@@ -6,6 +6,8 @@ namespace TypeFiles;
 
 public class WorkWithFile
 {
+    private string textPapka = null;
+    private string textMamka= null;
     private string filePapka = @"C:\Users\Студент1\Desktop\Папка\Papka.txt";
     private string fileMamka = @"C:\Users\Студент1\Desktop\Мамка\Mamka.txt";
     public WorkWithFile()
@@ -27,11 +29,12 @@ public class WorkWithFile
             case 1:
                 if (!fileinf.Exists)
                 {
-                    fileinf.Create();
-                    Console.WriteLine();
-                    Console.WriteLine("Текстовый документ в папке создан");
-                    Console.WriteLine();
-
+                    using (fileinf.Create())
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Текстовый документ в папке создан");
+                        Console.WriteLine();
+                    }
                 }
                 else
                 {
@@ -44,10 +47,12 @@ public class WorkWithFile
             case 2:
                 if (!fileinf1.Exists)
                 {
-                    fileinf1.Create();
-                    Console.WriteLine();
-                    Console.WriteLine("Текстовый документ в папке создан");
-                    Console.WriteLine();
+                    using (fileinf1.Create())
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Текстовый документ в папке создан");
+                        Console.WriteLine();
+                    }
                 }
                 else
                 {
@@ -75,10 +80,22 @@ public class WorkWithFile
             switch (selected)
             {
                 case 1:
-                    fileinf.MoveTo(fileMamka);
+                    if (fileinf1.Exists)
+                    {
+                        fileinf.MoveTo(fileMamka);
+                        Console.WriteLine();
+                        Console.WriteLine("Документ перемещён в мамку");
+                        Console.WriteLine();
+                    }
                     break;
                 case 2:
-                    fileinf1.MoveTo(filePapka);
+                    if (fileinf1.Exists)
+                    {
+                        fileinf1.MoveTo(filePapka);
+                        Console.WriteLine();
+                        Console.WriteLine("Документ перемещён в мамку");
+                        Console.WriteLine();
+                    }
                     break;
 
 
@@ -91,8 +108,8 @@ public class WorkWithFile
         Console.WriteLine("Куда записать текст");
         Console.WriteLine("1. Папка");
         Console.WriteLine("2. Мамка");
-        //  FileInfo fileinf = new FileInfo(filePapka);
-        // FileInfo fileinf1 = new FileInfo(fileMamka);
+        FileInfo fileinf = new FileInfo(filePapka);
+        FileInfo fileinf1 = new FileInfo(fileMamka);
         string menu = Console.ReadLine();
 
         bool parse = int.TryParse(menu, out var selected);
@@ -101,7 +118,7 @@ public class WorkWithFile
             switch (selected)
             {
                 case 1:
-                    using (FileStream fstream = File.Open(filePapka, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    using (FileStream fstream = new FileStream(filePapka, FileMode.Open))
                     {
                         Console.WriteLine("Что записать");
                         string select = Console.ReadLine();
@@ -111,19 +128,19 @@ public class WorkWithFile
                     }
 
                     break;
-                //case 2:
-                //    if (fileinf1.Exists)
-                //    {
-                //        using (FileStream fstream = new FileStream(fileinf1.FullName, FileMode.Open))
-                //        {
-                //            Console.WriteLine("Что записать");
-                //            string select = Console.ReadLine();
-                //            byte[] buffer = Encoding.Default.GetBytes(select);
-                //            fstream.Write(buffer, 0, buffer.Length);
-                //            Console.WriteLine("Текст записан в файл");
-                //        }
-                //    }
-                //    break;
+                case 2:
+                    if (fileinf1.Exists)
+                    {
+                        using (FileStream fstream = new FileStream(fileMamka, FileMode.Open))
+                        {
+                            Console.WriteLine("Что записать");
+                            string select = Console.ReadLine();
+                            byte[] buffer = Encoding.Default.GetBytes(select);
+                            fstream.Write(buffer, 0, buffer.Length);
+                            Console.WriteLine("Текст записан в файл");
+                        }
+                    }
+                    break;
                 default:
                     Console.WriteLine("Ошибка");
                     break;
@@ -175,6 +192,60 @@ public class WorkWithFile
             default:
                 Console.WriteLine("Ошибка");
                 break;
+        }
+    }
+    public void StreamWriter()
+    {
+        Console.WriteLine("Куда записать текст");
+        Console.WriteLine("1. Папка");
+        Console.WriteLine("2. Мамка");
+        FileInfo fileinf = new FileInfo(filePapka);
+        FileInfo fileinf1 = new FileInfo(fileMamka);
+        string menu = Console.ReadLine();
+
+        bool parse = int.TryParse(menu, out var selected);
+        if (parse)
+        {
+            switch (selected)
+            {
+                case 1:
+                    if (fileinf1.Exists)
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(filePapka, true))
+                        {
+                            Console.WriteLine("Что записать");
+                            string select = Console.ReadLine();
+                            streamWriter.Write(select);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Документа нет");
+                        Console.WriteLine();
+                    }
+                    break;
+                case 2:
+                    if (fileinf1.Exists)
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(fileMamka, true))
+                        {
+                            Console.WriteLine("Что записать");
+                            string select = Console.ReadLine();
+                            streamWriter.Write($"{select}");                 
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Документа нет");
+                        Console.WriteLine();
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Ошибка");
+                    break;
+            }
         }
     }
 }
